@@ -6,19 +6,22 @@ const cors = require("cors");
 const app = express();
 app.use(cors());
 app.use(helmet());
+app.use(bodyParser.urlencoded({ extended: false }))
 
-app.use(bodyParser.json());
-
-app.get("/subscribe", (req, res) => {
-  res.send({ message: "test kong" });
+app.get("/test", async (req, res) => {
+  res.send({ message: "asss" });
 });
 
-app.post("/subscribe", (req, res) => {
-  console.log(req.body);
+app.post("/aaa", (req, res) => {
+  res.send({ message: req.body });
+});
+
+app.post("/test", (req, res) => {
+  console.log(req.body)
   res.send(req.body);
 });
 
-const port = 5000;
+const port = 5001;
 
 module.exports = app;
 

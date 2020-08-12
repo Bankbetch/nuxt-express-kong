@@ -1,83 +1,21 @@
-version: "2"
-
+version: "3.7"
 services:
-  kong:
-    image: kong
-    container_name: kong
-    depends_on:
-      - kong_db
-      - kong_migration
+  designer:
+    image: devopsfaith/krakendesigner:latest
     ports:
-      - "8001:8001"
-      - "8444:8444"
-      - "8000:8000"
-      - "8443:8443"
-    restart: always
+      - 8787:80
+  krakend:
+    image: devopsfaith/krakend:config-watcher
+    working_dir: /etc/krakend/
     environment:
-      KONG_ADMIN_LISTEN: "0.0.0.0:8001"
-      KONG_CASSANDRA_CONTACT_POINTS: db
-      KONG_DATABASE: postgres
-      KONG_PG_DATABASE: kong
-      KONG_PG_HOST: kong_db
-      KONG_PG_USER: kong
-      KONG_PG_PASSWORD: yc2QPcNwCuzWDFqQQDPexAGcZQQ4dv55
-      KONG_ADMIN_ACCESS_LOG: /dev/stdout
-      KONG_ADMIN_ERROR_LOG: /dev/stderr
-      KONG_PROXY_ACCESS_LOG: /dev/stdout
-      KONG_PROXY_ERROR_LOG: /dev/stderr
-    networks:
-      - default
-
-  kong_db:
-    image: postgres:9.6
-    container_name: kong_db
+      KRAKEND_CONFIG: krakend.json
     ports:
-      - 5432:5432
-    environment:
-      POSTGRES_USER: kong
-      POSTGRES_DB: kong
-      POSTGRES_PASSWORD: yc2QPcNwCuzWDFqQQDPexAGcZQQ4dv55
-    networks:
-      - default
+      - 8000:8000
     volumes:
-      - kong_datastore:/var/lib/postgresql/data
-
-  kong_migration:
-    image: kong:latest
-    container_name: kong_migration
-    command: kong migrations bootstrap
-    restart: on-failure
-    environment:
-      KONG_DATABASE: postgres
-      KONG_PG_HOST: kong_db
-      KONG_PG_PASSWORD: yc2QPcNwCuzWDFqQQDPexAGcZQQ4dv55
-      KONG_PG_USER: kong
-      KONG_PG_DATABASE: kong
-    depends_on:
-      - kong_db
-    networks:
-      - default
-
-  konga:
-    container_name: konga
-    image: pantsel/konga
-    restart: always
-    environment:
-      NODE_ENV: development
-    ports:
-      - 1337:1337
-    networks:
-      - webproxy
-      - default
-
-volumes:
-  kong_datastore:
-  konga_database:
-
-networks:
-  webproxy:
-    external:
-      name: webproxy
-  default:
-    external:
-      name: kong_network
+      - ./konf.d:/etc/krakend/
+  check:
+    image: devopsfaith/krakend
+    working_dir: /etc/krakend/
+    command: check -c krakend.json
+    volumes:
+      - ./konf.d:/etc/krakend

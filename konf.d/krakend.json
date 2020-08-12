@@ -1,0 +1,59 @@
+{
+    "version": 2,
+    "name": "KrakenD - API Gateway",
+    "port": 8000,
+    "output_encoding": "json",
+    "extra_config": {
+        "github_com/devopsfaith/krakend-cors": {
+            "allow_origins": [
+                "*"
+            ],
+            "access-control-allow-origin": "*",
+            "allow_methods": [
+                "GET",
+                "HEAD",
+                "POST",
+                "PUT",
+                "DELETE",
+                "OPTIONS",
+                "PATCH"
+            ],
+            "allow_headers": [
+                "Origin",
+                "Authorization",
+                "Content-Type",
+                "Accept"
+            ],
+            "expose_headers": [
+                "Content-Length"
+            ],
+            "max_age": "12h"
+        }
+    },
+    "endpoints": [
+        {
+            "endpoint": "/test2",
+            "method": "GET",
+            "backend": [
+                {
+                    "url_pattern": "/api/test",
+                    "host": [
+                        "http://192.168.1.180:5000"
+                    ]
+                }
+            ]
+        },
+        {
+            "endpoint": "/test2",
+            "method": "POST",
+            "backend": [
+                {
+                    "url_pattern": "/api/test",
+                    "host": [
+                        "http://192.168.1.180:5000"
+                    ]
+                }
+            ]
+        }
+    ]
+}

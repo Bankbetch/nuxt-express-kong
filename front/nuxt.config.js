@@ -34,7 +34,9 @@ export default {
    ** Plugins to load before mounting the App
    ** https://nuxtjs.org/guide/plugins
    */
-  plugins: [],
+  plugins: [
+    '@/plugins/axios'
+  ],
   /*
    ** Auto import components
    ** See https://nuxtjs.org/api/configuration-components
@@ -51,14 +53,16 @@ export default {
     // Doc: https://bootstrap-vue.js.org
     "bootstrap-vue/nuxt",
     // Doc: https://axios.nuxtjs.org/usage
-    "@nuxtjs/axios"
+    "@nuxtjs/axios",
+    '@nuxtjs/proxy'
   ],
   /*
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    baseURL: "http://localhost:8000"
+    credentials: true,
+    // baseURL: "http://localhost:8000"
   },
 
   serverMiddleware: {
@@ -71,6 +75,6 @@ export default {
   build: {},
   server: {
     port: 5000, // default: 3000
-    host: "192.168.123.74" // default: localhost,
+    host: "192.168.1.180" // default: localhost,
   }
 };

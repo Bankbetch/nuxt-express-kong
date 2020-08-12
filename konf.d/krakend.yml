@@ -1,0 +1,44 @@
+version: 2
+name: KrakenD - API Gateway
+port: 8000
+output_encoding: json
+
+extra_config:
+        - github_com/devopsfaith/krakend-cors:
+                  - allow_origins:
+                            # - http://127.0.0.1:5000
+                            # - http://localhost:5000
+                            # - http://192.168.1.180:5000
+                            - "*"
+                  - allow_methods:
+                            - ["POST", "GET", "OPTIONS"]
+                  - max_age:
+                            - 12h
+                  - allow_headers:
+                            - Origin
+                            - Authorization
+                            - Content-Type
+                            - application/json
+                  - expose_headers:
+                            - Content-Length
+                  - access_control_allow_origin:
+                            - "*"
+endpoints:
+        - endpoint: "/"
+          method: "GET"
+          headers_to_pass:
+                  - Authorization
+                  - Content-Type
+          backend:
+                  - host:
+                            - 127.0.0.1
+          encoding:
+                  - json
+        - endpoint: "/test"
+          method: "GET"
+          backend:
+                  - host:
+                            - 127.0.0.1
+                  - host:
+                            - "http://192.168.1.180:5000"
+                    url_pattern: "/api/test"
